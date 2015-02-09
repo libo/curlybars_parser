@@ -19,17 +19,17 @@ describe CurlyBars::Lexer do
 
   it "scans a curly identifier" do
     expect(lexed("{{user}}")).
-      to eq([:CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :EOS])
+      to eq([:CURLY_TAG_BEGIN, :ACCESSOR, :CURLY_TAG_END, :EOS])
   end
 
   it "scans a curly identifier" do
     expect(lexed("foo {{user}} bar")).
-      to eq([:OUT, :CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :OUT, :EOS])
+      to eq([:OUT, :CURLY_TAG_BEGIN, :ACCESSOR, :CURLY_TAG_END, :OUT, :EOS])
   end
 
   it "scans a curly identifier with spaces" do
     expect(lexed("{{   user }}")).
-      to eq([:CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :EOS])
+      to eq([:CURLY_TAG_BEGIN, :ACCESSOR, :CURLY_TAG_END, :EOS])
   end
 
   it "scans comments" do
@@ -39,7 +39,7 @@ describe CurlyBars::Lexer do
 
   it "scans comments without being too greedy" do
     expect(lexed("{{! comment }}{{foo}}")).
-      to eq([:CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :EOS])
+      to eq([:CURLY_TAG_BEGIN, :ACCESSOR, :CURLY_TAG_END, :EOS])
   end
 
   it "scans comments" do
@@ -49,23 +49,26 @@ describe CurlyBars::Lexer do
 
   it "scans comments without being too greedy" do
     expect(lexed("{{{ user_name }}}")).
-      to eq([:CURLY_RAW_TAG_BEGIN, :IDENT, :CURLY_RAW_TAG_END, :EOS])
-  end
-
-  it "scans an if statement" do
-    expect(lexed("{{#if condition }}")).
-      to eq([:CURLY_TAG_BEGIN, :IF, :IDENT, :CURLY_TAG_END, :EOS])
+      to eq([:CURLY_RAW_TAG_BEGIN, :ACCESSOR, :CURLY_RAW_TAG_END, :EOS])
   end
 
   it "scans an if statement" do
     expect(lexed("{{#if condition }}foo{{/if}}")).
       to eq([:CURLY_TAG_BEGIN,
              :IF,
-             :IDENT,
+             :ACCESSOR,
              :CURLY_TAG_END,
              :OUT,
              :CURLY_TAG_BEGIN,
              :ENDIF,
+             :CURLY_TAG_END,
+             :EOS])
+  end
+
+  it "scans an accessor" do
+    expect(lexed("{{bar.foo.baz}}")).
+      to eq([:CURLY_TAG_BEGIN,
+             :ACCESSOR,
              :CURLY_TAG_END,
              :EOS])
   end

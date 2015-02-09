@@ -16,10 +16,14 @@ module CurlyBars
     rule(/{{/) { push_state :curly; :CURLY_TAG_BEGIN }
     rule(/}}/, :curly) { pop_state; :CURLY_TAG_END }
 
+    rule(/\s/, :curly)
+
     rule(/#\s*if/, :curly) { :IF }
     rule(/\/\s*if/, :curly) { :ENDIF }
 
-    rule(/[^}]*/, :curly) { :IDENT }
-    rule(/[^{]*/) { :OUT }
+    rule(/[A-Za-z][\w\.]*\??/, :curly) { |name| [:ACCESSOR, name] }
+    rule(/[A-Za-z][\w]*\??/, :curly) { |name| [:IDENT, name] }
+
+    rule(/[^{]*/) { |out| [:OUT, out] }
   end
 end

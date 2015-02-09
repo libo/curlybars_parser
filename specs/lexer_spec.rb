@@ -22,6 +22,11 @@ describe CurlyBars::Lexer do
       to eq([:CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :EOS])
   end
 
+  it "scans a curly identifier" do
+    expect(lexed("foo {{libo}} bar")).
+      to eq([:OUT, :CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :OUT, :EOS])
+  end
+
   private
 
   def lexed(expression)

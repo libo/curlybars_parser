@@ -42,6 +42,16 @@ describe CurlyBars::Lexer do
       to eq([:CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :EOS])
   end
 
+  it "scans comments" do
+    expect(lexed("{{!}}")).
+      to eq([:EOS])
+  end
+
+  it "scans comments without being too greedy" do
+    expect(lexed("{{{ user_name }}}")).
+      to eq([:CURLY_RAW_TAG_BEGIN, :IDENT, :CURLY_RAW_TAG_END, :EOS])
+  end
+
   private
 
   def lexed(expression)

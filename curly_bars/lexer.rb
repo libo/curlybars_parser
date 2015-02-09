@@ -2,8 +2,20 @@ require 'rltk/lexer'
 
 module CurlyBars
   class Lexer < RLTK::Lexer
-    rule(/{{/) { :CURLY_TAG_BEGIN }
-    rule(/}}/) { :CURLY_TAG_END }
+    match_first
+
+    rule(/{{/) do
+      push_state :curly
+      :CURLY_TAG_BEGIN
+    end
+
+    rule(/}}/, :curly) do
+      pop_state
+      :CURLY_TAG_END
+    end
+
+    rule(/[^}]*/, :curly) { :IDENT }
+
     rule(/.*/) { :OUT }
   end
 end

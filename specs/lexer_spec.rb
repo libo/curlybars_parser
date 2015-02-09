@@ -2,22 +2,29 @@ require './curly_bars/lexer'
 
 describe CurlyBars::Lexer do
   it "generates EOS token for an empty string" do
-    lexed = CurlyBars::Lexer.lex("").map(&:type)
-    expect(lexed).to eq([:EOS])
+    expect(lexed("")).to eq([:EOS])
   end
 
   it "generates OUT token" do
-    lexed = CurlyBars::Lexer.lex("foo").map(&:type)
-    expect(lexed).to eq([:OUT, :EOS])
+    expect(lexed("foo")).to eq([:OUT, :EOS])
   end
 
   it "opens a curly_bars mustaches {{" do
-    lexed = CurlyBars::Lexer.lex("{{").map(&:type)
-    expect(lexed).to eq([:CURLY_TAG_BEGIN, :EOS])
+    expect(lexed("{{")).to eq([:CURLY_TAG_BEGIN, :EOS])
   end
 
-  it "closes a curly_bars mustaches }}" do
-    lexed = CurlyBars::Lexer.lex("}}").map(&:type)
-    expect(lexed).to eq([:CURLY_TAG_END, :EOS])
+  it "scans open and close curly" do
+   expect(lexed("{{}}")).to eq([:CURLY_TAG_BEGIN, :CURLY_TAG_END, :EOS])
+  end
+
+  it "scans a curly identifier" do
+    expect(lexed("{{libo}}")).
+      to eq([:CURLY_TAG_BEGIN, :IDENT, :CURLY_TAG_END, :EOS])
+  end
+
+  private
+
+  def lexed(expression)
+    CurlyBars::Lexer.lex(expression).map(&:type)
   end
 end

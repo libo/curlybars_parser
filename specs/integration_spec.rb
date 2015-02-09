@@ -17,7 +17,7 @@ describe "integration" do
 
   it "resolves presenter" do
     class AvatarPresenter
-      def initilize(avatar)
+      def initialize(avatar)
         @avatar = avatar
       end
 
@@ -42,29 +42,18 @@ describe "integration" do
         @current_user = { avatar: { url: "http://foobar" } }
       end
 
-      def test(str)
-        eval(str)
-      end
-
       def user
         UserPresenter.new(@current_user)
       end
     end
 
-
     doc = "{{user.avatar.url}}"
     lex = CurlyBars::Lexer.lex(doc)
     ruby_code = CurlyBars::Parser.parse(lex)
 
-    context = PostShowPresenter.new.test(ruby_code)
+    context = PostShowPresenter.new
+    rendered = context.instance_eval(ruby_code)
 
-    # puts ruby_code
-
-    # rendered = context.instance_eval(ruby_code)
-
-
-    # # rendered = PostShowPresenter.new.instance_evalruby_code)
-
-    # expect(rendered).to eq("http://foobar")
+    expect(rendered).to eq("http://foobar")
   end
 end

@@ -52,6 +52,24 @@ describe CurlyBars::Lexer do
       to eq([:CURLY_RAW_TAG_BEGIN, :IDENT, :CURLY_RAW_TAG_END, :EOS])
   end
 
+  it "scans an if statement" do
+    expect(lexed("{{#if condition }}")).
+      to eq([:CURLY_TAG_BEGIN, :IF, :IDENT, :CURLY_TAG_END, :EOS])
+  end
+
+  it "scans an if statement" do
+    expect(lexed("{{#if condition }}foo{{/if}}")).
+      to eq([:CURLY_TAG_BEGIN,
+             :IF,
+             :IDENT,
+             :CURLY_TAG_END,
+             :OUT,
+             :CURLY_TAG_BEGIN,
+             :ENDIF,
+             :CURLY_TAG_END,
+             :EOS])
+  end
+
   private
 
   def lexed(expression)

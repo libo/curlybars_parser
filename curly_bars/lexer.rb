@@ -15,6 +15,10 @@ module CurlyBars
 
     rule(/{{/) { push_state :curly; :CURLY_TAG_BEGIN }
     rule(/}}/, :curly) { pop_state; :CURLY_TAG_END }
+
+    rule(/#\s*if/, :curly) { :IF }
+    rule(/\/\s*if/, :curly) { :ENDIF }
+
     rule(/[^}]*/, :curly) { :IDENT }
     rule(/[^{]*/) { :OUT }
   end

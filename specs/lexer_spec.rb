@@ -17,12 +17,12 @@ describe CurlyBars::Lexer do
    expect(lexed("{{}}")).to eq([:EOS])
   end
 
-  it "scans a curly accessor" do
+  it "scans a curly acessor" do
     expect(lexed("{{user}}")).
       to eq([:ACCESSOR, :EOS])
   end
 
-  it "scans a curly accessor" do
+  it "scans a curly identifier" do
     expect(lexed("foo {{user}} bar")).
       to eq([:OUT, :ACCESSOR, :OUT, :EOS])
   end
@@ -45,11 +45,6 @@ describe CurlyBars::Lexer do
   it "scans comments" do
     expect(lexed("{{!}}")).
       to eq([:EOS])
-  end
-
-  it "scans comments without being too greedy" do
-    expect(lexed("{{{ user_name }}}")).
-      to eq([:RAW_BEGIN, :ACCESSOR, :RAW_END, :EOS])
   end
 
   it "scans an if statement" do

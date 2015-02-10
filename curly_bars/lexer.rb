@@ -9,10 +9,6 @@ module CurlyBars
     rule(/[^}]+/, :comment)
     rule(/}}/, :comment) { pop_state }
 
-    # Curly raw
-    rule(/{{{/,) { push_state :curly; :RAW_BEGIN }
-    rule(/}}}/, :curly) { pop_state; :RAW_END }
-
     rule(/{{/) { push_state :curly }
     rule(/}}/, :curly) { pop_state }
 

@@ -2,7 +2,7 @@ require 'rltk/parser'
 
 module CurlyBars
   class Parser < RLTK::Parser
-    #root :template
+    start :template
 
     production(:template) do
       clause('items') { |items| items }
@@ -15,10 +15,10 @@ module CurlyBars
 
     production(:item) do
       clause('OUT') { |out| "buf << \"#{out}\";" }
-      clause('CURLY_TAG_BEGIN IF .expression CURLY_TAG_END .template CURLY_TAG_BEGIN ENDIF CURLY_TAG_END') do |expression, template|
+      clause('IF .expression .template ENDIF') do |expression, template|
         "if #{expression}\n #{template} \nend\n"
       end
-      clause('CURLY_TAG_BEGIN .ACCESSOR CURLY_TAG_END') do |accessor|
+      clause('.ACCESSOR') do |accessor|
         "#{accessor}"
       end
     end
